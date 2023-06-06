@@ -21,7 +21,7 @@ In this paper, we propose an end-to-end source-free domain adaptation semantic s
 ### TODO List
 - [ ] Code for "GTA5-to-Cityscapes"
 - [ ] Code for "Synthia-to-Cityscapes"
-- [ ] Checkpoints and prediction maps
+- [ ] <a href="https://drive.google.com/drive/folders/1OWXlABtiIs4JQISjxzOY31e1ZBzniylt?usp=sharing" target="_blank">Checkpoints and prediction maps</a>
 
 ## Results
 <div align="left">
@@ -34,12 +34,12 @@ In this paper, we propose an end-to-end source-free domain adaptation semantic s
   </tr>
   <tr>
       <td rowspan="2">GTA5-to-Cityscapes</td>    
-      <td ><a href="#" target="_blank">Source Only</a></td>  
+      <td ><a href="https://drive.google.com/file/d/10aT2amgx8mY3XpCCIZ9TDbnVWsN7vn1x/view?usp=sharing" target="_blank">Source Only</a></td>  
       <td >36.6</td> 
       <td >-</td>  
    </tr>
    <tr>
-      <td ><a href="#" target="_blank">IAPC</a></td> 
+      <td ><a href="https://drive.google.com/file/d/12P43VlJpduyJW1-F_GDH1FSyF98sWrb6/view?usp=sharing" target="_blank">IAPC</a></td> 
       <td >49.4</td> 
       <td >-</td>
    </tr>
