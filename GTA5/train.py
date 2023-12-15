@@ -24,6 +24,10 @@ from dataset.cityscapes_dataset import cityscapesDataSet
 from dataset.cityscapes_test import CityscapesDataSet
 
 from dataset.cityscapes_pseudo_dataset import cityscapes_pseudo_DataSet
+# ##
+# # Table IV - SP
+# from dataset.cityscapes_pseudo_SP_dataset import cityscapes_pseudo_SP_DataSet
+# ##
 
 
 
@@ -272,6 +276,17 @@ def main():
                                   shuffle=False,
                                   pin_memory=True)
 
+    # ##
+    # # Table IV - SP
+    # SP_loader = data.DataLoader(cityscapes_pseudo_SP_DataSet(args.data_dir, args.data_label_dir, args.data_list,
+    #                                                         max_iters=args.num_steps * args.iter_size * args.batch_size,
+    #                                                         resize_size=args.input_size, crop_size=args.crop_size,
+    #                                                         scale=True, mirror=True, mean=IMG_MEAN, set='train',
+    #                                                         autoaug=args.autoaug, threshold=args.threshold),
+    #                               batch_size=2, shuffle=False, num_workers=args.num_workers,
+    #                               pin_memory=True, drop_last=True, worker_init_fn=_init_fn)
+    # sp_have = Trainer.estimate_centroids(SP_loader)
+    # ##
 
     for i_iter in range(args.num_steps):
 
@@ -279,6 +294,12 @@ def main():
 
         print('\r>>>Current Iter step: %08d, Learning rate: %f'% (i_iter, Trainer.gen_opt.param_groups[0]['lr']), end='')
 
+        # ##
+        # # Table IV - for SP - Not using
+        # if i_iter % 2970 == 0 and i_iter != 0:
+        #     print('update prototypes')
+        #     sp_have = Trainer.estimate_centroids(SP_loader)
+        # ##
         for sub_i in range(args.iter_size):
             _, batch = trainloader_iter.__next__()
             _, batch_t = targetloader_iter.__next__()
