@@ -252,6 +252,7 @@ class AD_Trainer(nn.Module):
 
     # ##
     # # Table IV - SP
+    # # train.py needs to be modified
     # def estimate_centroids(self, ps_loader):
     #     self.prototype = [None]*19 
     #     nums_feature = [0 for i_c in range(self.num_classes)]
