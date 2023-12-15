@@ -133,6 +133,11 @@ class AD_Trainer(nn.Module):
         self.sm = torch.nn.Softmax(dim=1)
         self.log_sm = torch.nn.LogSoftmax(dim=1)
 
+        # ##
+        # # Table IV SP
+        # self.prototype = [None]*19
+        # ##
+
     def update_class_criterion(self, labels):
         weight = torch.FloatTensor(self.num_classes).zero_().cuda()
         weight += 1
@@ -194,8 +199,42 @@ class AD_Trainer(nn.Module):
                     indices.remove(j)
             centroids_i = torch.stack(centroid_i_list, dim=0).squeeze(1)
 
-            feat_i = F.normalize(feature_i, p=2, dim=1)
-            centroids_i = F.normalize(centroids_i.detach(), p=2, dim=1)
+            # ##
+            # # Table IV - SP
+            # centroid_i_list = []
+            # indices = [torch.tensor(i_c).cuda() for i_c in range(self.num_classes)]
+            # for j in range(self.num_classes):
+            #     centroid_i_list.append(self.prototype[j] )
+            # centroids_i = torch.stack(centroid_i_list, dim=0).squeeze(1)
+
+            # feat_i = F.normalize(feature_i, p=2, dim=1)
+            # centroids_i = F.normalize(centroids_i.detach(), p=2, dim=1)
+            # ##
+
+            # ##
+            # # Table IV - MUP
+            # centroid_i_list = []
+            # indices = [torch.tensor(i_c).cuda() for i_c in range(self.num_classes)]
+            # for j in range(self.num_classes):
+            #     mask_i_j = torch.eq(label_memory_i, j)  # size Ns
+            #     feature_i_j = feature_memory_i[mask_i_j, :]  # size Ns_i x F
+            #     if feature_i_j.size(0) > 0:
+            #         centroid_i_j = torch.mean(feature_i_j, dim=0, keepdim=True)  # size 1 x F
+            #         if self.prototype[j] is None:
+            #             self.prototype[j] = centroid_i_j
+            #         else:
+            #             pro_temp = self.prototype[j].clone()
+            #             self.prototype[j] = pro_temp*0.99 + centroid_i_j*(1-0.99)
+            #         centroid_i_list.append(self.prototype[j].clone() )
+            #     else:
+            #         if self.prototype[j] is None:
+            #             centroid_i_list.append( torch.tensor([[0.] * feature_memory_i.size(1)], dtype=torch.float).cuda())
+            #         else:
+
+            #             centroid_i_list.append(self.prototype[j].clone())
+            #         indices.remove(j)
+            # centroids_i = torch.stack(centroid_i_list, dim=0).squeeze(1)
+            # ##
 
             logits = feat_i.mm(centroids_i.permute(1, 0).contiguous())
             logits_pro = logits
@@ -210,6 +249,54 @@ class AD_Trainer(nn.Module):
                                                  label_contrast.size(3))
 
         return clu_predictions.squeeze(1), clu_probabilitys
+
+    # ##
+    # # Table IV - SP
+    # def estimate_centroids(self, ps_loader):
+    #     self.prototype = [None]*19 
+    #     nums_feature = [0 for i_c in range(self.num_classes)]
+    #     for index, batch in (enumerate(ps_loader)):
+    #         images, labels, _, name = batch
+    #         with torch.no_grad():
+    #             pred1_memory, pred2_memory, feature_memory = self.G_memory(images.cuda())
+    #             pred2_memory_up = self.interp_target(pred2_memory)
+    #             label_memory = torch.argmax((pred2_memory_up), dim=1)
+    #             label_memory = label_memory.clone()
+    #             label_memory = F.interpolate(label_memory.type(torch.FloatTensor).unsqueeze(1), size=feature_memory.size()[2:],
+    #                                          mode='nearest')
+    #         feature_memory = feature_memory.permute(0, 2, 3, 1).contiguous()
+    #         clu_prediction_list = []
+    #         clu_probability_list = []
+    #         for i in range(feature_memory.size(0)):
+    #             label_memory_i = label_memory[i]
+    #             feature_memory_i = feature_memory[i]
+
+    #             label_memory_i = label_memory_i.view(-1)
+    #             feature_memory_i = feature_memory_i.view(-1, feature_memory_i.size(-1))
+
+    #             centroid_i_list = []
+    #             indices = [torch.tensor(i_c).cuda() for i_c in range(self.num_classes)]
+    #             for j in range(self.num_classes):
+    #                 mask_i_j = torch.eq(label_memory_i, j)
+    #                 feature_i_j = feature_memory_i[mask_i_j, :]
+    #                 if feature_i_j.size(0) > 0:
+    #                     centroid_i_j = torch.mean(feature_i_j, dim=0, keepdim=True)
+    #                     nums_feature[j] += 1
+    #                     if self.prototype[j] is None:
+    #                         self.prototype[j] = centroid_i_j
+    #                     else:
+    #                         self.prototype[j] += centroid_i_j
+    #                     indices.remove(j)
+    #     print(nums_feature)
+    #     for j in range(self.num_classes):
+    #         if nums_feature[j] != 0:
+    #             self.prototype[j] = self.prototype[j] /  nums_feature[j]
+    #         else:
+    #             self.prototype[j] = torch.tensor([[0.] * feature_memory_i.size(1)], dtype=torch.float).cuda()
+    #             print('Attention: class {} not features'.format(j))
+    #     return 'have'
+    # ##
+
 
     def gen_update(self, images, images_t, labels, labels_t, i_iter, image_aug1, label_aug1, image_aug2, label_aug2):
         self.update_source_memory_network()
@@ -242,6 +329,14 @@ class AD_Trainer(nn.Module):
             source_pro_one = torch.gather(pred_source_up, 1, source_pro_one.unsqueeze(1))
             source_pro_two = torch.gather(pred_source_up, 1, source_pro_two.unsqueeze(1))
             entropy_source = (1. - torch.div(source_pro_two, source_pro_one)).squeeze(1)
+            ###
+            ## Table IV - FPL
+            # entropy_source = (source_pro_one).squeeze(1)
+            ###
+            ###
+            ## Table IV - SPL
+            # entropy_source = (1.- source_pro_two).squeeze(1)
+            ###
             loss_seg2 = self.seg_loss(pred2_aug_up, label_aug2)
             loss_pse = torch.mean(loss_seg2 * entropy_source)
             loss_total += self.lambda_loss_pseudo_label * loss_pse
@@ -323,4 +418,3 @@ class AD_Trainer(nn.Module):
         print(f'mIoU = \t{round(np.nanmean(inters_over_union_classes) * 100, 2)}')
         self.G.train()
         return round(np.nanmean(inters_over_union_classes) * 100, 2)
-
