@@ -48,11 +48,11 @@ python tools/plain_test_net.py --eval-only  --config-file configs/IAPC_foggy.yam
   </tr>
   <tr>
       <td rowspan="2">Cityscapes-to-CityscapesFoggy</td>    
-      <td ><a href="https://" target="_blank">Source Only</a></td>  
+      <td ><a href="https://drive.google.com/file/d/1LUJllsbukL3DHEfZujACE6UdzPP0xqhO/view?usp=sharing" target="_blank">Source Only</a></td>  
       <td >26.3</td>
    </tr>
    <tr>
-      <td ><a href="https://" target="_blank">IAPC</a></td> 
+      <td ><a href="https://drive.google.com/file/d/1aZ1H9juFu5MkGl1SVe-fE45-hsTk5jtk/view?usp=sharing" target="_blank">IAPC</a></td> 
       <td >37.6</td>
    </tr>
 </table>
