@@ -71,3 +71,6 @@ python evaluate_cityscapes.py
    </tr>
 </table>
    </div>
+
+## IAPC for Object Detection
+please refer to the [subdirectory OD](https://github.com/yihong-97/Source-free-IAPC/tree/81c1c2d1de6217b6ee0fc03f2e49b2ae619caa88/OD)
