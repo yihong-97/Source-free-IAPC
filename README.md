@@ -4,13 +4,13 @@
   
 <div align="center">
  
-[Paper]()
+[Paper](https://arxiv.org/abs/2306.01598) 
   
 <img src="fig/architecture.png" />
  
  </div>
  
- Code for our paper "Towards Source-free Domain Adaptive Semantic Segmentation via Importance-aware and Prototype-contrast Learning"
+ Code for our paper "Towards Source-free Domain Adaptive Semantic Segmentation via Importance-aware and Prototype-contrast Learning" (Accepted by IEEE Transactions on Intelligent Vehicles)
  
 In this paper, we propose an end-to-end source-free domain adaptation semantic segmentation method via Importance-Aware and Prototype-Contrast (IAPC) learning. The proposed IAPC framework effectively extracts domain-invariant knowledge from the well-trained source model and learns domain-specific knowledge from the unlabeled target domain.
 
