@@ -198,6 +198,8 @@ class AD_Trainer(nn.Module):
                     centroid_i_list.append(torch.tensor([[0.] * feature_memory_i.size(1)], dtype=torch.float).cuda())
                     indices.remove(j)
             centroids_i = torch.stack(centroid_i_list, dim=0).squeeze(1)
+            feat_i = F.normalize(feature_i, p=2, dim=1)
+            centroids_i = F.normalize(centroids_i.detach(), p=2, dim=1)
 
             # ##
             # # Table IV - SP
