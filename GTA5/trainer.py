@@ -200,7 +200,6 @@ class AD_Trainer(nn.Module):
             centroids_i = torch.stack(centroid_i_list, dim=0).squeeze(1)
             feat_i = F.normalize(feature_i, p=2, dim=1)
             centroids_i = F.normalize(centroids_i.detach(), p=2, dim=1)
-
             # ##
             # # Table IV - SP
             # centroid_i_list = []
@@ -247,8 +246,8 @@ class AD_Trainer(nn.Module):
         clu_predictions = torch.stack(clu_prediction_list, dim=0)
         clu_probabilitys = torch.stack(clu_probability_list, dim=0)
         clu_predictions = clu_predictions.view(label_contrast.size())
-        clu_probabilitys = clu_probabilitys.view(label_contrast.size(0), self.num_classes, label_contrast.size(2),
-                                                 label_contrast.size(3))
+        clu_probabilitys = clu_probabilitys.view(label_contrast.size(0),label_contrast.size(2),
+                                                 label_contrast.size(3), self.num_classes).permute(0, 3, 1, 2).contiguous()
 
         return clu_predictions.squeeze(1), clu_probabilitys
 
