@@ -198,7 +198,8 @@ class AD_Trainer(nn.Module):
                     centroid_i_list.append(torch.tensor([[0.] * feature_memory_i.size(1)], dtype=torch.float).cuda())
                     indices.remove(j)
             centroids_i = torch.stack(centroid_i_list, dim=0).squeeze(1)
-            feat_i = feature_i  # fix bug https://github.com/yihong-97/Source-free-IAPC/issues/5
+            feat_i = F.normalize(feature_i, p=2, dim=1)
+            centroids_i = F.normalize(centroids_i.detach(), p=2, dim=1)
             # ##
             # # Table IV - SP
             # centroid_i_list = []
@@ -245,11 +246,6 @@ class AD_Trainer(nn.Module):
         clu_predictions = torch.stack(clu_prediction_list, dim=0)
         clu_probabilitys = torch.stack(clu_probability_list, dim=0)
         clu_predictions = clu_predictions.view(label_contrast.size())
-        # fix bug https://github.com/yihong-97/Source-free-IAPC/issues/5
-        # old code has a reshape error. Because clu_probabilitys shpe is [b,h*w,c],
-        # we cant use func `view` directly to make the shape change to [b,c,h,w].
-        # clu_probabilitys.view(label_contrast.size(0), self.num_classes, label_contrast.size(2),
-        #                                                  label_contrast.size(3))
         clu_probabilitys = clu_probabilitys.view(label_contrast.size(0),label_contrast.size(2),
                                                  label_contrast.size(3), self.num_classes).permute(0, 3, 1, 2).contiguous()
 
